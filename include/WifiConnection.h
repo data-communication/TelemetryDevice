@@ -10,5 +10,5 @@ class WifiConnection {
 
     public: 
         static void initWifi(const DeviceSettings &setitngs);
-        static void update();
+        static bool update();
 };

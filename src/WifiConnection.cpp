@@ -17,7 +17,7 @@ void WifiConnection::initWifi(const DeviceSettings &settings){
     Serial.println(settings.wifiSSID);
 }
 
-void WifiConnection::update(){
+bool WifiConnection::update(){
     bool connected = WiFi.status() == WL_CONNECTED;
     static unsigned long disconnectTime = 0;
     static unsigned long lastBlink = 0;
@@ -45,5 +45,7 @@ void WifiConnection::update(){
         lastRetryTime = millis();
         WiFi.reconnect();
     }
+    
+    return connected;
 }
 

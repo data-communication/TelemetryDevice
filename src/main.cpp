@@ -20,6 +20,8 @@ SettingsStorage storage;
 void setup() {
     Serial.begin(115200);
     delay(2000);
+
+    Serial.println();
     
     rgb_init();
 
@@ -31,10 +33,11 @@ void setup() {
 }
 
 void loop() {
+    if(!WifiConnection::update()){
+        return;
+    }
+    
     static unsigned long lastMeasurement = 0;
-
-    WifiConnection::update();
-
     if(millis() - lastMeasurement >= MEASUREMENT_TIMER){
         float humi = dht.readHumidity();
         float temp = dht.readTemperature();

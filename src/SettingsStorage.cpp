@@ -8,8 +8,8 @@ void SettingsStorage::load(DeviceSettings &settings){
 
     settings.deviceId = preferences.getString("deviceId", WiFi.macAddress());
     settings.deviceLocation = preferences.getString("deviceLocation", "");
-    settings.wifiSSID = preferences.getString("wifiSSID", "Telia-E70367");
-    settings.wifiPassword = preferences.getString("wifiPassword", "pufhskraK6ttPH6Y");
+    settings.wifiSSID = preferences.getString("wifiSSID", "");
+    settings.wifiPassword = preferences.getString("wifiPassword", "");
 
     preferences.end();
 }
@@ -20,8 +20,8 @@ void SettingsStorage::save(const DeviceSettings &settings){
 
     preferences.putString("deviceId", settings.deviceId);
     preferences.putString("deviceLocation", settings.deviceLocation);
-    preferences.putString("wifiSSID", settings.wifiSSID);
-    preferences.putString("wifiPassword", settings.wifiPassword);
+    preferences.putString("wifiSSID", "");
+    preferences.putString("wifiPassword", "");
 
     preferences.end();
 }

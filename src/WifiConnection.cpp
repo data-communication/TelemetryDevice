@@ -2,6 +2,8 @@
 #include <WiFi.h>
 #include "rgb_led.h"
 
+#define RECONNECT_BLINK_TIMER 500
+
 unsigned long WifiConnection::lastRetryTime = 0;
 bool WifiConnection::wasConnected = false;
 
@@ -33,9 +35,9 @@ void WifiConnection::update(){
 
     wasConnected = connected;
 
-    if(!connected && millis() - lastBlink >= 250 && millis() - disconnectTime >= 2000){
+    if(!connected && millis() - lastBlink >= RECONNECT_BLINK_TIMER && millis() - disconnectTime >= 2000){
         lastBlink = millis();
-        blinkState ? rgb_cyan() : rgb_off();
+        blinkState ? rgb_blue() : rgb_off();
         blinkState ^= 1;
     }
     

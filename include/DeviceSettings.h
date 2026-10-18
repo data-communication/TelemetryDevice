@@ -1,10 +1,11 @@
 #pragma once
 #include <Arduino.h>
+#include <WiFi.h>
 
 typedef struct {
-    String deviceId;
-    String deviceLocation;
+    char deviceId[37];
+    char deviceLocation[33];
     
-    String wifiSSID;
-    String wifiPassword;
+    char wifiSSID[33];
+    char wifiPassword[65];
 } DeviceSettings;

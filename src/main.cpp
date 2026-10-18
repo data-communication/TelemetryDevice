@@ -6,6 +6,7 @@
 #include "SettingsStorage.h"
 #include "WifiConnection.h"
 #include "rgb_led.h"
+#include "BLEConnection.h"
 
 #define DHT_PIN 4
 #define DHT_TYPE DHT11
@@ -22,17 +23,20 @@ void setup() {
     delay(2000);
 
     Serial.println();
-    
+
     rgb_init();
 
     storage.load(settings);
 
     WifiConnection::initWifi(settings);
-    
+    BLEConnection::init(settings);
+
     dht.begin();
 }
 
 void loop() {
+    BLEConnection::update(storage);
+
     if(!WifiConnection::update()){
         return;
     }

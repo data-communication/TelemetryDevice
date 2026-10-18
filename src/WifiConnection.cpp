@@ -45,7 +45,7 @@ bool WifiConnection::update(){
         lastRetryTime = millis();
         WiFi.reconnect();
     }
-    
+
     return connected;
 }
 

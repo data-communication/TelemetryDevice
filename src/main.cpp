@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <DHT.h>
 #include <WiFi.h>
+#include <time.h>
 
 #include "DeviceSettings.h"
 #include "SettingsStorage.h"
@@ -46,6 +47,7 @@ void printSettings(){
 
     Serial.print("Mqtt Port: ");
     Serial.println(settings.mqttPort);
+    Serial.println();
 }
 
 void setup() {
@@ -60,8 +62,8 @@ void setup() {
 
     printSettings();
 
-    WifiConnection::init(settings);
     BLEConnection::init(settings);
+    WifiConnection::init(settings);
     MqttConnection::init(settings);
 
     dht.begin();
@@ -94,26 +96,38 @@ void loop() {
             return;
         }
 
-        Serial.println(F("--------------------"));
+        time_t now = time(nullptr);
+        long utc = static_cast<long>(now);
+
+        Serial.println();
         Serial.print(F("Humidity: "));
         Serial.print(humi);
         Serial.println(F("%"));
         Serial.print(F("Temperature: "));
         Serial.print(temp);
         Serial.println(F("°C"));
+        Serial.print(F("Time: "));
+        Serial.println(utc);
+        Serial.println(F("--------------------"));
 
         char payload[256];
         snprintf(payload, 
             sizeof(payload), 
             "{\"deviceId\":\"%s\""
             ",\"measurements\":["
-            "{\"type\":\"temperature\",\"value\":%.2f,\"unit\":\"°C\"},"
-            "{\"type\":\"humidity\",\"value\":%.2f,\"unit\":\"%%\"}]}",
+                "{\"type\":\"temperature\",\"value\":%.2f,\"unit\":\"°C\"},"
+                "{\"type\":\"humidity\",\"value\":%.2f,\"unit\":\"%%\"}],"
+            "\"timestamp\":\"%ld\"}",
             settings.deviceId,
             temp,
-            humi
+            humi,
+            utc
         );
         
         MqttConnection::publish(payload, "test/climate");
-    }   
+    }
+
+    if(!WifiConnection::update()){
+        return;
+    }
 }

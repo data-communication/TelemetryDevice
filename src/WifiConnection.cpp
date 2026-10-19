@@ -1,6 +1,7 @@
 #include "WifiConnection.h"
 #include <WiFi.h>
 #include "rgb_led.h"
+#include <time.h>
 
 #define RECONNECT_BLINK_TIMER 500
 
@@ -26,6 +27,10 @@ bool WifiConnection::update(){
     if(connected && !wasConnected) {
         Serial.print(F("Wi-Fi connected. IP: "));
         Serial.println(WiFi.localIP());
+
+        configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+        Serial.println(F("Time synced with NTP."));
+
         rgb_green();
     } else if(!connected && wasConnected) {
         Serial.println(F("Wi-Fi disconnected."));

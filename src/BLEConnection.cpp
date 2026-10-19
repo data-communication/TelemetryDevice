@@ -48,6 +48,11 @@ class SettingsCallbacks : public NimBLECharacteristicCallbacks {
             Serial.println(F("Updated deviceLocation."));
         }
 
+        else if (characteristic == BLEConnection::measurementInterval) {
+            BLEConnection::readField(BLEConnection::measurementInterval, BLEConnection::settingsPtr->measurementInterval);
+            Serial.println(F("Updated measurementInterval."));
+        }
+
         else if (characteristic == BLEConnection::wifiSSID) {
             BLEConnection::readField(BLEConnection::wifiSSID, BLEConnection::settingsPtr->wifiSSID);
             Serial.println(F("Updated wifiSSID."));
@@ -92,6 +97,7 @@ DeviceSettings* BLEConnection::settingsPtr = nullptr;
 
 NimBLECharacteristic* BLEConnection::deviceId = nullptr;
 NimBLECharacteristic* BLEConnection::deviceLocation = nullptr;
+NimBLECharacteristic* BLEConnection::measurementInterval = nullptr;
 
 NimBLECharacteristic* BLEConnection::wifiSSID = nullptr;
 NimBLECharacteristic* BLEConnection::wifiPassword = nullptr;
@@ -150,6 +156,7 @@ void BLEConnection::init(DeviceSettings& settings) {
 
     BLEConnection::deviceId = BLEConnection::createSetting(service, BLEConnection::DEVICE_ID_UUID, BLEConnection::settingsPtr->deviceId);
     BLEConnection::deviceLocation = BLEConnection::createSetting(service, BLEConnection::DEVICE_LOCATION_UUID, BLEConnection::settingsPtr->deviceLocation);
+    BLEConnection::measurementInterval = BLEConnection::createSetting(service, BLEConnection::MEASUREMENT_INTERVAL_UUID, BLEConnection::settingsPtr->measurementInterval);
     
     BLEConnection::wifiSSID = BLEConnection::createSetting(service, BLEConnection::WIFI_SSID_UUID, BLEConnection::settingsPtr->wifiSSID);
     BLEConnection::wifiPassword = BLEConnection::createSetting(service, BLEConnection::WIFI_PASSWORD_UUID, BLEConnection::settingsPtr->wifiPassword);
@@ -168,6 +175,7 @@ void BLEConnection::init(DeviceSettings& settings) {
     command->setCallbacks(&commandCallbacks);
     BLEConnection::deviceId->setCallbacks(&settingsCallbacks);
     BLEConnection::deviceLocation->setCallbacks(&settingsCallbacks);
+    BLEConnection::measurementInterval->setCallbacks(&settingsCallbacks);
     
     BLEConnection::wifiSSID->setCallbacks(&settingsCallbacks);
     BLEConnection::wifiPassword->setCallbacks(&settingsCallbacks);

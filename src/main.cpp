@@ -13,7 +13,7 @@
 #define DHT_PIN 4
 #define DHT_TYPE DHT11
 
-#define MEASUREMENT_TIMER 5 * 1000
+#define SETTINGS_PRINT_INTERVAL 5000
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
@@ -26,6 +26,9 @@ void printSettings(){
 
     Serial.print("DeviceLocation: ");
     Serial.println(settings.deviceLocation);
+    
+    Serial.print("MeasurementInterval: ");
+    Serial.println(settings.measurementInterval);
 
     Serial.print("WifiSSID: ");
     Serial.println(settings.wifiSSID);
@@ -72,22 +75,27 @@ void setup() {
 void loop() {
     BLEConnection::update(storage);
 
-    static unsigned long lastMeasurement = 0;
-    if(millis() - lastMeasurement >= MEASUREMENT_TIMER){
-        lastMeasurement = millis();
-
-        if(!validSettings(settings)){
+    static unsigned long lastSettingsPrint = 0;
+    if(!validSettings(settings)){
+        if(millis() - lastSettingsPrint >= SETTINGS_PRINT_INTERVAL){
             printSettings();
-            Serial.print("------------------");
-            Serial.print("Invalid Settings.");
-            Serial.println("------------------");
-            return;
-        }
 
-        if(!WifiConnection::update()){
-            return;
-        }
+            Serial.print(F("------------------"));
+            Serial.print(F("Invalid Settings."));
+            Serial.println(F("------------------"));
 
+            lastSettingsPrint = millis();
+        }
+        rgb_yellow();
+        return;
+    }
+
+    if(!WifiConnection::update()){
+        return;
+    }
+
+    static unsigned long lastMeasurement = 0;
+    if(millis() - lastMeasurement >= settings.measurementInterval){
         float humi = dht.readHumidity();
         float temp = dht.readTemperature();
 
@@ -108,7 +116,6 @@ void loop() {
         Serial.println(F("°C"));
         Serial.print(F("Time: "));
         Serial.println(utc);
-        Serial.println(F("--------------------"));
 
         char payload[256];
         snprintf(payload, 
@@ -123,11 +130,9 @@ void loop() {
             humi,
             utc
         );
-        
-        MqttConnection::publish(payload, "test/climate");
-    }
 
-    if(!WifiConnection::update()){
-        return;
+        MqttConnection::publish(payload, "test/climate");
+        Serial.println(F("--------------------"));
+        lastMeasurement = millis();
     }
 }

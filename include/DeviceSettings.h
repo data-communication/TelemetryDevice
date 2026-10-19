@@ -7,6 +7,7 @@
 typedef struct {
     char deviceId[37];
     char deviceLocation[33];
+    uint16_t measurementInterval;
     
     char wifiSSID[33];
     char wifiPassword[65];
@@ -18,13 +19,12 @@ typedef struct {
     uint16_t mqttPort;
 } DeviceSettings;
 
-
 template <size_t N>
 bool hasTerminator(const char (&value)[N]) {
     return memchr(value, '\0', N) != nullptr;
 }
 
-bool isValidPort(const uint16_t port){
+inline bool isValidPort(const uint16_t port){
     return port == 1883 || port == 8883;
 }
 
@@ -54,6 +54,10 @@ inline bool validSettings(const DeviceSettings& settings){
     }
 
     if(!isValidPort(settings.mqttPort)){
+        return false;
+    }
+
+    if(settings.measurementInterval < 100){
         return false;
     }
 

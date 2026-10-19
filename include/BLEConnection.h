@@ -9,7 +9,6 @@ class BLEConnection {
     static bool restartPending;
     static unsigned long restartRequestedAt;
 
-    // static NimBLECharacteristic* createSetting(NimBLEService* service, const char* uuid, const char* value);
     template<typename T>
     static NimBLECharacteristic* createSetting(NimBLEService* service, const char* uuid, const T& value){
         uint32_t properties =
@@ -31,6 +30,7 @@ class BLEConnection {
 
         static NimBLECharacteristic* deviceId;
         static NimBLECharacteristic* deviceLocation;
+        static NimBLECharacteristic* measurementInterval;
 
         static NimBLECharacteristic* wifiSSID;
         static NimBLECharacteristic* wifiPassword;
@@ -43,22 +43,23 @@ class BLEConnection {
 
         static NimBLECharacteristic* result;
 
-        inline static constexpr char SERVICE_UUID[]         = "9b43d9ad-bbac-4bf2-bfbc-715c00000000";
+        inline static constexpr char SERVICE_UUID[]                 = "9b43d9ad-bbac-4bf2-bfbc-715c00000000";
         
-        inline static constexpr char DEVICE_ID_UUID[]       = "9b43d9ad-bbac-4bf2-bfbc-715c00000001";
-        inline static constexpr char DEVICE_LOCATION_UUID[] = "9b43d9ad-bbac-4bf2-bfbc-715c00000002";
+        inline static constexpr char DEVICE_ID_UUID[]               = "9b43d9ad-bbac-4bf2-bfbc-715c00000001";
+        inline static constexpr char DEVICE_LOCATION_UUID[]         = "9b43d9ad-bbac-4bf2-bfbc-715c00000002";
+        inline static constexpr char MEASUREMENT_INTERVAL_UUID[]    = "9b43d9ad-bbac-4bf2-bfbc-715c00000003";
         
-        inline static constexpr char WIFI_SSID_UUID[]       = "9b43d9ad-bbac-4bf2-bfbc-715c00000003";
-        inline static constexpr char WIFI_PASSWORD_UUID[]   = "9b43d9ad-bbac-4bf2-bfbc-715c00000004";
+        inline static constexpr char WIFI_SSID_UUID[]               = "9b43d9ad-bbac-4bf2-bfbc-715c00000004";
+        inline static constexpr char WIFI_PASSWORD_UUID[]           = "9b43d9ad-bbac-4bf2-bfbc-715c00000005";
         
-        inline static constexpr char MQTT_USERNAME_UUID[]   = "9b43d9ad-bbac-4bf2-bfbc-715c00000005";
-        inline static constexpr char MQTT_PASSWORD_UUID[]   = "9b43d9ad-bbac-4bf2-bfbc-715c00000006";
-        inline static constexpr char MQTT_HOST_UUID[]       = "9b43d9ad-bbac-4bf2-bfbc-715c00000007";
-        inline static constexpr char MQTT_TOPIC_UUID[]      = "9b43d9ad-bbac-4bf2-bfbc-715c00000008";
-        inline static constexpr char MQTT_PORT_UUID[]       = "9b43d9ad-bbac-4bf2-bfbc-715c00000009";
+        inline static constexpr char MQTT_USERNAME_UUID[]           = "9b43d9ad-bbac-4bf2-bfbc-715c00000006";
+        inline static constexpr char MQTT_PASSWORD_UUID[]           = "9b43d9ad-bbac-4bf2-bfbc-715c00000007";
+        inline static constexpr char MQTT_HOST_UUID[]               = "9b43d9ad-bbac-4bf2-bfbc-715c00000008";
+        inline static constexpr char MQTT_TOPIC_UUID[]              = "9b43d9ad-bbac-4bf2-bfbc-715c00000009";
+        inline static constexpr char MQTT_PORT_UUID[]               = "9b43d9ad-bbac-4bf2-bfbc-715c00000010";
         
-        inline static constexpr char COMMAND_UUID[]         = "9b43d9ad-bbac-4bf2-bfbc-715c00000010";
-        inline static constexpr char RESULT_UUID[]          = "9b43d9ad-bbac-4bf2-bfbc-715c00000011";
+        inline static constexpr char COMMAND_UUID[]                 = "9b43d9ad-bbac-4bf2-bfbc-715c00000011";
+        inline static constexpr char RESULT_UUID[]                  = "9b43d9ad-bbac-4bf2-bfbc-715c00000012";
 
         enum class Action : uint8_t {
             Save,

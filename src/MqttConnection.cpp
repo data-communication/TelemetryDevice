@@ -27,7 +27,7 @@ void MqttConnection::init(const DeviceSettings& settings) {
     MqttConnection::mqttClient.setMqttClientName(settings.mqttUsername);
     MqttConnection::mqttClient.loopStart();
 
-    Serial.println("MQTT Client running.");
+    Serial.println(F("MQTT Client running."));
 }
 
 void MqttConnection::publish(const char* message, const char* topic) {
@@ -35,5 +35,5 @@ void MqttConnection::publish(const char* message, const char* topic) {
         return;
 
     mqttClient.publish(topic, message);
-    Serial.println("Mqtt Sent.");
+    Serial.println(F("Mqtt Sent."));
 }

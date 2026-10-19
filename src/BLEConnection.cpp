@@ -40,47 +40,47 @@ class SettingsCallbacks : public NimBLECharacteristicCallbacks {
 
         if (characteristic == BLEConnection::deviceId) {
             BLEConnection::readField(BLEConnection::deviceId, BLEConnection::settingsPtr->deviceId);
-            Serial.println("Updated deviceId.");
+            Serial.println(F("Updated deviceId."));
         }
 
         else if (characteristic == BLEConnection::deviceLocation) {
             BLEConnection::readField(BLEConnection::deviceLocation, BLEConnection::settingsPtr->deviceLocation);
-            Serial.println("Updated deviceLocation.");
+            Serial.println(F("Updated deviceLocation."));
         }
 
         else if (characteristic == BLEConnection::wifiSSID) {
             BLEConnection::readField(BLEConnection::wifiSSID, BLEConnection::settingsPtr->wifiSSID);
-            Serial.println("Updated wifiSSID.");
+            Serial.println(F("Updated wifiSSID."));
         }
 
         else if (characteristic == BLEConnection::wifiPassword) {
             BLEConnection::readField(BLEConnection::wifiPassword, BLEConnection::settingsPtr->wifiPassword);
-            Serial.println("Updated wifiPassword.");
+            Serial.println(F("Updated wifiPassword."));
         }
 
         else if (characteristic == BLEConnection::mqttUsername) {
             BLEConnection::readField(BLEConnection::mqttUsername, BLEConnection::settingsPtr->mqttUsername);
-            Serial.println("Updated mqttUsername");
+            Serial.println(F("Updated mqttUsername"));
         }
 
         else if (characteristic == BLEConnection::mqttPassword) {
             BLEConnection::readField(BLEConnection::mqttPassword, BLEConnection::settingsPtr->mqttPassword);
-            Serial.println("Updated mqttPassword");
+            Serial.println(F("Updated mqttPassword"));
         }
 
         else if (characteristic == BLEConnection::mqttHost) {
             BLEConnection::readField(BLEConnection::mqttHost, BLEConnection::settingsPtr->mqttHost);
-            Serial.println("Updated mqttHost");
+            Serial.println(F("Updated mqttHost"));
         }
 
         else if (characteristic == BLEConnection::mqttTopic) {
             BLEConnection::readField(BLEConnection::mqttTopic, BLEConnection::settingsPtr->mqttTopic);
-            Serial.println("Updated mqttTopic");
+            Serial.println(F("Updated mqttTopic"));
         }
 
         else if (characteristic == BLEConnection::mqttPort) {
             BLEConnection::readField(BLEConnection::mqttPort, BLEConnection::settingsPtr->mqttPort);
-            Serial.println("Updated mqttPort");
+            Serial.println(F("Updated mqttPort"));
         }
     }
 };
@@ -133,7 +133,7 @@ void BLEConnection::init(DeviceSettings& settings) {
     BLEConnection::requests = xQueueCreate(2, sizeof(BLEConnection::Request));
 
     if (BLEConnection::requests == nullptr) {
-        Serial.println("Could not create BLE request queue.");
+        Serial.println(F("Could not create BLE request queue."));
         return;
     }
 
@@ -145,7 +145,7 @@ void BLEConnection::init(DeviceSettings& settings) {
     NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY);
     NimBLEDevice::setSecurityPasskey(passkey);
 
-    Serial.print("BLE pairing PIN: ");
+    Serial.print(F("BLE pairing PIN: "));
     Serial.println(passkey);
 
     auto server = NimBLEDevice::createServer();
@@ -203,7 +203,7 @@ void BLEConnection::init(DeviceSettings& settings) {
     advertising->enableScanResponse(true);
     advertising->start();
 
-    Serial.print("BLE available as: ");
+    Serial.print(F("BLE available as: "));
     Serial.println(BLEConnection::settingsPtr->deviceId);
 }
 
@@ -239,11 +239,11 @@ void BLEConnection::update(SettingsStorage& storage) {
 
         if(savedSuccessfully){
             setResult("saved");
-            Serial.println("Settings saved. Waiting for apply.");
+            Serial.println(F("Settings saved. Waiting for apply."));
         }
         else{
             setResult("error:save_failed");
-            Serial.println("Could not save settings.");
+            Serial.println(F("Could not save settings."));
         }
     }
     else if(request.action == Action::Apply){
@@ -256,6 +256,6 @@ void BLEConnection::update(SettingsStorage& storage) {
         restartRequestedAt = millis();
         restartPending = true;
 
-        Serial.println("Restarting with saved settings...");
+        Serial.println(F("Restarting with saved settings..."));
     }
 }

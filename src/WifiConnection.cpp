@@ -31,7 +31,6 @@ bool WifiConnection::update(){
         configTime(0, 0, "pool.ntp.org", "time.nist.gov");
         Serial.println(F("Time synced with NTP."));
 
-        rgb_green();
     } else if(!connected && wasConnected) {
         Serial.println(F("Wi-Fi disconnected."));
         rgb_red();
@@ -50,6 +49,9 @@ bool WifiConnection::update(){
         lastRetryTime = millis();
         WiFi.reconnect();
     }
+
+    if(connected)
+        rgb_green();
 
     return connected;
 }

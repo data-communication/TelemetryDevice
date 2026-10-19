@@ -4,33 +4,27 @@
 
 void SettingsStorage::load(DeviceSettings &settings){
     Preferences preferences;
-    preferences.begin("device-config", true);
+    if (!preferences.begin("device-config", true)) {
+        Serial.println("No settings found.");
+        return;
+    }
 
-    String deviceId = preferences.getString("deviceId", WiFi.macAddress());
-    deviceId.toCharArray(settings.deviceId, sizeof(settings.deviceId));
-
-    String deviceLocation = preferences.getString("deviceLocation", "");
-    deviceLocation.toCharArray(settings.deviceLocation, sizeof(settings.deviceLocation));
-
-    String wifiSSID = preferences.getString("wifiSSID", "");
-    wifiSSID.toCharArray(settings.wifiSSID, sizeof(settings.wifiSSID));
-
-    String wifiPassword = preferences.getString("wifiPassword", "");
-    wifiPassword.toCharArray(settings.wifiPassword, sizeof(settings.wifiPassword));
+    bool loaded =
+        preferences.getBytesLength("settings") == sizeof(settings) &&
+        preferences.getBytes("settings", &settings, sizeof(settings)) == sizeof(settings);
 
     preferences.end();
 }
 
 bool SettingsStorage::save(const DeviceSettings &settings){
     Preferences preferences;
-    preferences.begin("device-config", false);
 
-    preferences.putString("deviceId", settings.deviceId);
-    preferences.putString("deviceLocation", settings.deviceLocation);
-    preferences.putString("wifiSSID", settings.wifiSSID);
-    preferences.putString("wifiPassword", settings.wifiPassword);
+    if (!preferences.begin("device-config", false)) {
+      return false;
+    }
 
+    size_t written = preferences.putBytes("settings", &settings, sizeof(settings));
     preferences.end();
 
-    return true;
+    return written == sizeof(settings);
 }

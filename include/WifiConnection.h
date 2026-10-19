@@ -9,6 +9,6 @@ class WifiConnection {
     static bool wasConnected;
 
     public: 
-        static void initWifi(const DeviceSettings &setitngs);
+        static void init(const DeviceSettings &setitngs);
         static bool update();
 };

@@ -1,5 +1,6 @@
 #include <NimBLEDevice.h>
 #include "BLEConnection.h"
+#include "MqttConnection.h"
 
 class CommandCallbacks : public NimBLECharacteristicCallbacks {
     void onWrite(NimBLECharacteristic* characteristic, NimBLEConnInfo& connInfo) override {
@@ -36,14 +37,14 @@ class SettingsCallbacks : public NimBLECharacteristicCallbacks {
     void onWrite(NimBLECharacteristic* characteristic, NimBLEConnInfo& connInfo) override {
 
         auto value = characteristic->getValue();
-        
+
         if (characteristic == BLEConnection::deviceId) {
             BLEConnection::readField(BLEConnection::deviceId, BLEConnection::settingsPtr->deviceId);
             Serial.println("Updated deviceId.");
         }
 
         else if (characteristic == BLEConnection::deviceLocation) {
-            BLEConnection::readField(BLEConnection::wifiSSID, BLEConnection::settingsPtr->deviceLocation);
+            BLEConnection::readField(BLEConnection::deviceLocation, BLEConnection::settingsPtr->deviceLocation);
             Serial.println("Updated deviceLocation.");
         }
 
@@ -56,6 +57,31 @@ class SettingsCallbacks : public NimBLECharacteristicCallbacks {
             BLEConnection::readField(BLEConnection::wifiPassword, BLEConnection::settingsPtr->wifiPassword);
             Serial.println("Updated wifiPassword.");
         }
+
+        else if (characteristic == BLEConnection::mqttUsername) {
+            BLEConnection::readField(BLEConnection::mqttUsername, BLEConnection::settingsPtr->mqttUsername);
+            Serial.println("Updated mqttUsername");
+        }
+
+        else if (characteristic == BLEConnection::mqttPassword) {
+            BLEConnection::readField(BLEConnection::mqttPassword, BLEConnection::settingsPtr->mqttPassword);
+            Serial.println("Updated mqttPassword");
+        }
+
+        else if (characteristic == BLEConnection::mqttHost) {
+            BLEConnection::readField(BLEConnection::mqttHost, BLEConnection::settingsPtr->mqttHost);
+            Serial.println("Updated mqttHost");
+        }
+
+        else if (characteristic == BLEConnection::mqttTopic) {
+            BLEConnection::readField(BLEConnection::mqttTopic, BLEConnection::settingsPtr->mqttTopic);
+            Serial.println("Updated mqttTopic");
+        }
+
+        else if (characteristic == BLEConnection::mqttPort) {
+            BLEConnection::readField(BLEConnection::mqttPort, BLEConnection::settingsPtr->mqttPort);
+            Serial.println("Updated mqttPort");
+        }
     }
 };
 
@@ -66,8 +92,16 @@ DeviceSettings* BLEConnection::settingsPtr = nullptr;
 
 NimBLECharacteristic* BLEConnection::deviceId = nullptr;
 NimBLECharacteristic* BLEConnection::deviceLocation = nullptr;
+
 NimBLECharacteristic* BLEConnection::wifiSSID = nullptr;
 NimBLECharacteristic* BLEConnection::wifiPassword = nullptr;
+
+NimBLECharacteristic* BLEConnection::mqttUsername = nullptr;
+NimBLECharacteristic* BLEConnection::mqttPassword = nullptr;
+NimBLECharacteristic* BLEConnection::mqttHost = nullptr;
+NimBLECharacteristic* BLEConnection::mqttTopic = nullptr;
+NimBLECharacteristic* BLEConnection::mqttPort = nullptr;
+
 NimBLECharacteristic* BLEConnection::result = nullptr;
 
 QueueHandle_t BLEConnection::requests = nullptr;
@@ -121,8 +155,15 @@ void BLEConnection::init(DeviceSettings& settings) {
 
     BLEConnection::deviceId = BLEConnection::createSetting(service, BLEConnection::DEVICE_ID_UUID, BLEConnection::settingsPtr->deviceId);
     BLEConnection::deviceLocation = BLEConnection::createSetting(service, BLEConnection::DEVICE_LOCATION_UUID, BLEConnection::settingsPtr->deviceLocation);
+    
     BLEConnection::wifiSSID = BLEConnection::createSetting(service, BLEConnection::WIFI_SSID_UUID, BLEConnection::settingsPtr->wifiSSID);
     BLEConnection::wifiPassword = BLEConnection::createSetting(service, BLEConnection::WIFI_PASSWORD_UUID, BLEConnection::settingsPtr->wifiPassword);
+
+    BLEConnection::mqttUsername = BLEConnection::createSetting(service, BLEConnection::MQTT_USERNAME_UUID, BLEConnection::settingsPtr->mqttUsername);
+    BLEConnection::mqttPassword = BLEConnection::createSetting(service, BLEConnection::MQTT_PASSWORD_UUID, BLEConnection::settingsPtr->mqttPassword);
+    BLEConnection::mqttHost = BLEConnection::createSetting(service, BLEConnection::MQTT_HOST_UUID, BLEConnection::settingsPtr->mqttHost);
+    BLEConnection::mqttTopic = BLEConnection::createSetting(service, BLEConnection::MQTT_TOPIC_UUID, BLEConnection::settingsPtr->mqttTopic);
+    BLEConnection::mqttPort = BLEConnection::createSetting(service, BLEConnection::MQTT_PORT_UUID, BLEConnection::settingsPtr->mqttPort);
 
     auto command = service->createCharacteristic(
         BLEConnection::COMMAND_UUID,
@@ -132,8 +173,15 @@ void BLEConnection::init(DeviceSettings& settings) {
     command->setCallbacks(&commandCallbacks);
     BLEConnection::deviceId->setCallbacks(&settingsCallbacks);
     BLEConnection::deviceLocation->setCallbacks(&settingsCallbacks);
+    
     BLEConnection::wifiSSID->setCallbacks(&settingsCallbacks);
     BLEConnection::wifiPassword->setCallbacks(&settingsCallbacks);
+
+    BLEConnection::mqttUsername->setCallbacks(&settingsCallbacks);
+    BLEConnection::mqttPassword->setCallbacks(&settingsCallbacks);
+    BLEConnection::mqttHost->setCallbacks(&settingsCallbacks);
+    BLEConnection::mqttTopic->setCallbacks(&settingsCallbacks);
+    BLEConnection::mqttPort->setCallbacks(&settingsCallbacks);
 
     BLEConnection::result = service->createCharacteristic(
         BLEConnection::RESULT_UUID,

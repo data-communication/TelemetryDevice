@@ -7,7 +7,7 @@
 unsigned long WifiConnection::lastRetryTime = 0;
 bool WifiConnection::wasConnected = false;
 
-void WifiConnection::initWifi(const DeviceSettings &settings){
+void WifiConnection::init(const DeviceSettings &settings){
     WiFi.mode(WIFI_STA);
     WiFi.setAutoReconnect(true);
     WiFi.begin(settings.wifiSSID, settings.wifiPassword);

@@ -15,13 +15,17 @@ typedef struct {
     char mqttPassword[65];
     char mqttHost[33];
     char mqttTopic[96];
-    char mqttPort[6];
+    uint16_t mqttPort;
 } DeviceSettings;
 
 
 template <size_t N>
 bool hasTerminator(const char (&value)[N]) {
     return memchr(value, '\0', N) != nullptr;
+}
+
+bool isValidPort(const uint16_t port){
+    return port == 1883 || port == 8883;
 }
 
 inline bool validSettings(const DeviceSettings& settings){
@@ -32,8 +36,7 @@ inline bool validSettings(const DeviceSettings& settings){
         !hasTerminator(settings.mqttUsername) ||
         !hasTerminator(settings.mqttPassword) ||
         !hasTerminator(settings.mqttHost) ||
-        !hasTerminator(settings.mqttTopic) ||
-        !hasTerminator(settings.mqttPort)
+        !hasTerminator(settings.mqttTopic)
     ){
         return false;
     }
@@ -45,9 +48,12 @@ inline bool validSettings(const DeviceSettings& settings){
         settings.mqttUsername[0] == '\0' ||
         settings.mqttPassword[0] == '\0' ||
         settings.mqttHost[0] == '\0' ||
-        settings.mqttTopic[0] == '\0' ||
-        settings.mqttPort[0] == '\0'
+        settings.mqttTopic[0] == '\0'
     ){
+        return false;
+    }
+
+    if(!isValidPort(settings.mqttPort)){
         return false;
     }
 

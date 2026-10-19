@@ -9,7 +9,20 @@ class BLEConnection {
     static bool restartPending;
     static unsigned long restartRequestedAt;
 
-    static NimBLECharacteristic* createSetting(NimBLEService* service, const char* uuid, const char* value);
+    // static NimBLECharacteristic* createSetting(NimBLEService* service, const char* uuid, const char* value);
+    template<typename T>
+    static NimBLECharacteristic* createSetting(NimBLEService* service, const char* uuid, const T& value){
+        uint32_t properties =
+            NIMBLE_PROPERTY::READ |
+            NIMBLE_PROPERTY::WRITE |
+            NIMBLE_PROPERTY::READ_AUTHEN |
+            NIMBLE_PROPERTY::WRITE_AUTHEN;
+
+        auto characteristic = service->createCharacteristic(uuid, properties);
+        characteristic->setValue(String(value).c_str());
+
+        return characteristic;
+    }
 
     public: 
         static DeviceSettings* settingsPtr;
@@ -76,4 +89,5 @@ class BLEConnection {
 
             return true;
         }
+        static bool readField(NimBLECharacteristic* characteristic, uint16_t& destination);
 };

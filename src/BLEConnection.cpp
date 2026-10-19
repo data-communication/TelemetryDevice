@@ -114,17 +114,12 @@ void BLEConnection::setResult(const char* message) {
     result->setValue(message);
 }
 
-NimBLECharacteristic* BLEConnection::createSetting(NimBLEService* service, const char* uuid, const char* value) {
-    uint32_t properties =
-        NIMBLE_PROPERTY::READ |
-        NIMBLE_PROPERTY::WRITE |
-        NIMBLE_PROPERTY::READ_AUTHEN |
-        NIMBLE_PROPERTY::WRITE_AUTHEN;
+bool BLEConnection::readField(NimBLECharacteristic* characteristic, uint16_t &destination){
+    auto value = characteristic->getValue();
 
-    auto characteristic = service->createCharacteristic(uuid, properties);
-    characteristic->setValue(value);
+    destination = static_cast<uint16_t>(atoi(value.c_str()));
 
-    return characteristic;
+    return true;
 }
 
 void BLEConnection::init(DeviceSettings& settings) {

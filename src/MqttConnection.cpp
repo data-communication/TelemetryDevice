@@ -21,7 +21,7 @@ ESP32MQTTClient MqttConnection::mqttClient{};
 void MqttConnection::init(const DeviceSettings& settings) {
     MqttConnection::mqttClient.setURL(
         settings.mqttHost, 
-        static_cast<uint16_t>(atoi(settings.mqttPort)), 
+        settings.mqttPort, 
         settings.mqttUsername, settings.mqttPassword
     );
     MqttConnection::mqttClient.setMqttClientName(settings.mqttUsername);

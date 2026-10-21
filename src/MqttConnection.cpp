@@ -22,7 +22,8 @@ void MqttConnection::init(const DeviceSettings& settings) {
     MqttConnection::mqttClient.setURL(
         settings.mqttHost, 
         settings.mqttPort, 
-        settings.mqttUsername, settings.mqttPassword
+        settings.mqttUsername, 
+        settings.mqttPassword
     );
     MqttConnection::mqttClient.setMqttClientName(settings.mqttUsername);
     MqttConnection::mqttClient.loopStart();
@@ -34,6 +35,5 @@ void MqttConnection::publish(const char* message, const char* topic) {
     if (!sending.load() || !mqttClient.isConnected())
         return;
 
-    mqttClient.publish(topic, message);
-    Serial.println(F("Mqtt Sent."));
+    mqttClient.publish(topic, message) ? Serial.println(F("Mqtt sent.")) : Serial.println("Could not send mqtt.");
 }

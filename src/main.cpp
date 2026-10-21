@@ -131,7 +131,7 @@ void loop() {
             utc
         );
 
-        MqttConnection::publish(payload, "test/climate");
+        MqttConnection::publish(payload, settings.mqttTopic);
         Serial.println(F("--------------------"));
         lastMeasurement = millis();
     }

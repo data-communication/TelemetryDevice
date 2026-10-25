@@ -62,6 +62,10 @@ void setup() {
     rgb_init();
 
     storage.load(settings);
+    if (settings.deviceId[0] == '\0'){
+        strcpy(settings.deviceId, WiFi.macAddress().c_str());
+        storage.save(settings);
+    }
 
     printSettings();
 
